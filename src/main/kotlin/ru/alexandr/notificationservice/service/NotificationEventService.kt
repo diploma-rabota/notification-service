@@ -9,7 +9,10 @@ import ru.alexandr.notificationservice.entity.NotificationEntity
 import ru.alexandr.notificationservice.entity.NotificationStatus
 import ru.alexandr.notificationservice.repository.EmailOutboxRepository
 import ru.alexandr.notificationservice.repository.NotificationRepository
+import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class NotificationEventService(
@@ -55,13 +58,26 @@ class NotificationEventService(
 
     private fun buildBody(event: OrderCreatedEvent): String {
         return """
-            Здравствуйте, ${event.customerName}!
+        Здравствуйте, ${event.customerName}!
 
-            Ваш заказ №${event.orderId} успешно создан.
-            Сумма заказа: ${event.totalAmount}
-            Дата создания заказа: ${event.createdAt}
+        Ваш заказ №${event.orderId} успешно создан.
 
-            Спасибо за использование нашей платформы.
-        """.trimIndent()
+        Сумма заказа: ${formatAmount(event.totalAmount)}
+        Дата создания заказа: ${formatDate(event.createdAt)}
+
+        Спасибо за использование нашей платформы!
+        
+        С уважением,
+        Команда Digital Platform
+    """.trimIndent()
+    }
+
+    private fun formatAmount(amount: BigDecimal): String {
+        val formatter = DecimalFormat("#,###")
+        return formatter.format(amount) + " ₽"
+    }
+    private fun formatDate(date: LocalDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        return date.format(formatter)
     }
 }
