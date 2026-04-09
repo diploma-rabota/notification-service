@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8084
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5435/notification_service_db
